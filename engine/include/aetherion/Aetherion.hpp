@@ -1,0 +1,17 @@
+#pragma once
+// Kernel umbrella. Platform adapters (Vulkan/DX12, window, audio) live outside.
+#include "aetherion/math/Types.hpp"
+#include "aetherion/math/PlanetWarp.hpp"
+#include "aetherion/core/JobSystem.hpp"
+#include "aetherion/core/Streaming.hpp"
+#include "aetherion/render/VirtualGeometry.hpp"
+#include "aetherion/render/MeshMerger.hpp"
+#include "aetherion/render/GIVolume.hpp"
+#include "aetherion/render/FrameGraph.hpp"
+#include "aetherion/world/ScaleGraph.hpp"
+#include "aetherion/world/SolarSystem.hpp"
+#include "aetherion/procgen/BiomeGraph.hpp"
+#include "aetherion/procgen/Ocean.hpp"
+#include "aetherion/physics/Newtonian.hpp"
+#include "aetherion/gameplay/FirstPerson.hpp"
+#include "aetherion/ui/HolographicMap.hpp"

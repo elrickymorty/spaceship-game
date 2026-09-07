@@ -1,0 +1,102 @@
+{
+  "id": "earth_class",
+  "description": "Canonical terrestrial graph: continents, orogeny, hydrology, Whittaker.",
+  "nodes": [
+    {
+      "id": "continent",
+      "type": "FBM",
+      "params": { "octaves": 8, "lacunarity": 2.02, "gain": 0.5, "scale": 4e-5, "seed_ofs": 0 }
+    },
+    {
+      "id": "mount",
+      "type": "RidgedMF",
+      "params": { "octaves": 6, "gain": 0.5, "ridge_offset": 1.0, "scale": 8e-5, "seed_ofs": 11 }
+    },
+    {
+      "id": "craton",
+      "type": "Worley",
+      "params": { "metric": "euclid", "jitter": 0.9, "scale": 2e-4 }
+    },
+    {
+      "id": "warp",
+      "type": "DomainWarp",
+      "params": { "strength": 1200, "octaves": 3 },
+      "inputs": ["continent"]
+    },
+    {
+      "id": "macro_h",
+      "type": "Blend",
+      "params": { "mode": "add", "k": 0.35 },
+      "inputs": ["warp", "mount"]
+    },
+    {
+      "id": "terrace",
+      "type": "Terrace",
+      "params": { "steps": 12, "sharpness": 0.65 },
+      "inputs": ["macro_h"]
+    },
+    {
+      "id": "erosion",
+      "type": "HydraulicErosion",
+      "params": { "iterations": 32, "lifetime": 30, "inertia": 0.3, "capacity": 4, "evaporation": 0.02 },
+      "inputs": ["terrace"]
+    },
+    {
+      "id": "thermal",
+      "type": "ThermalErosion",
+      "params": { "talus_deg": 35, "iterations": 8 },
+      "inputs": ["erosion"]
+    },
+    { "id": "temp", "type": "Temperature", "params": { "k_lat": 1.2, "lapse_K_km": 6.5 } },
+    { "id": "wind", "type": "WindPrevailing", "params": {} },
+    { "id": "moist", "type": "Moisture", "inputs": ["thermal", "wind"] },
+    { "id": "whit", "type": "Whittaker", "inputs": ["temp", "moist"] },
+    {
+      "id": "rivers",
+      "type": "RiverGraph",
+      "params": { "width_exp": 0.4 },
+      "inputs": ["thermal"]
+    },
+    { "id": "lakes", "type": "LakeFill", "inputs": ["rivers"] },
+    { "id": "coast", "type": "Coast", "params": { "terrace_m": 1.5 }, "inputs": ["thermal"] },
+    {
+      "id": "trees_temp",
+      "type": "VegetationLayer",
+      "params": { "species": "broadleaf", "density_m2": 0.08, "min_slope": 0, "max_slope": 0.55, "lod_impostor_m": 80 },
+      "inputs": ["whit"]
+    },
+    {
+      "id": "trees_boreal",
+      "type": "VegetationLayer",
+      "params": { "species": "conifer", "density_m2": 0.12, "lod_impostor_m": 90 },
+      "inputs": ["whit"]
+    },
+    {
+      "id": "grass",
+      "type": "VegetationLayer",
+      "params": { "species": "graminoid", "density_m2": 18.0, "lod_impostor_m": 25, "wind_coupled": 1 },
+      "inputs": ["whit"]
+    },
+    {
+      "id": "rocks",
+      "type": "RockLayer",
+      "params": { "poisson_m": 3.5, "set": "talus_granite" },
+      "inputs": ["thermal"]
+    },
+    {
+      "id": "herbivores",
+      "type": "FaunaField",
+      "params": { "species": "grazer", "density_km2": 4.0, "diet": "prey", "flock": 1 }
+    },
+    {
+      "id": "predators",
+      "type": "FaunaField",
+      "params": { "species": "stalker", "density_km2": 0.3, "diet": "predator", "flock": 0 }
+    },
+    {
+      "id": "ocean",
+      "type": "OceanSpectrum",
+      "params": { "waves": 6, "fft_lod0": 1 }
+    }
+  ]
+}
