@@ -1,0 +1,17 @@
+{
+  "id": "arid_super_earth",
+  "description": "High-g, low volatile. Ridged orogeny dominates. No river graph.",
+  "inherits": "earth_class",
+  "overrides": {
+    "genome": { "volatile_inventory": 0.12, "tectonic": 0.8, "t_eq_k": 310 },
+    "nodes": [
+      { "id": "mount", "params": { "gain": 0.72 } },
+      { "id": "rivers", "disable": true },
+      { "id": "lakes", "disable": true },
+      { "id": "trees_temp", "disable": true },
+      { "id": "trees_boreal", "params": { "density_m2": 0.004 } },
+      { "id": "grass", "params": { "species": "xerophyte", "density_m2": 2.5 } },
+      { "id": "herbivores", "params": { "density_km2": 0.6 } }
+    ]
+  }
+}
